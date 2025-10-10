@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: arthur
+      changes:
+        - sqlFile:
+            path: 01-add-agenda-session-vote-table.sql
+            relativeToChangelogFile: true
+        - sqlFile:
+            path: 02-add-event-related-tables.sql
+            relativeToChangelogFile: true
