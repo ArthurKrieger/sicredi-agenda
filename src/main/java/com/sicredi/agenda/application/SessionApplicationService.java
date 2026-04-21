@@ -42,7 +42,7 @@ public class SessionApplicationService {
         applicationEventPublisher.publishEvent(new SessionCreatedEvent(session));
         return session;
     }
-    
+
     @Transactional
     public void voteOnSession(@NonNull final AgendaId agendaId, @NonNull final SessionId sessionId, @NonNull final Vote vote) {
         final Agenda agenda = agendaRepository.findAgenda(agendaId).orElseThrow(() -> new AgendaNotFoundException(agendaId));

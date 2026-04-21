@@ -1,0 +1,24 @@
+spring:
+  docker:
+    compose:
+      lifecycle-management: start_and_stop
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/agenda
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+  cloud:
+    aws:
+      credentials:
+        access-key: test
+        secret-key: test
+      endpoint: http://localhost:4566
+      region:
+        static: us-east-1
+      sns:
+        enabled: true
+      sqs:
+        enabled: true
+

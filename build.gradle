@@ -36,6 +36,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
 
     // AWS
     implementation 'io.awspring.cloud:spring-cloud-aws-starter-sns'
@@ -58,8 +60,6 @@ dependencies {
     testImplementation 'com.mercateo:test-clock:1.0.2'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-    // Mocking External Services
-    implementation 'org.wiremock:wiremock-standalone:3.6.0'
 }
 
 

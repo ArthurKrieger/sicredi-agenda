@@ -1,35 +1,36 @@
 spring:
   application:
     name: agenda
+  docker:
+    compose:
+      file: infra/docker/compose-infra.yaml
+
   messages:
     basename: messages
     encoding: UTF-8
-  docker:
-    compose:
-      lifecycle-management: start_and_stop
-  datasource:
-    url: jdbc:postgresql://localhost:5432/agenda
-    username: postgres
-    password: postgres
-    driver-class-name: org.postgresql.Driver
+
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-master.yaml
     enabled: true
-  cloud:
-    aws:
-      credentials:
-        access-key: test
-        secret-key: test
-      endpoint: http://localhost:4566
-      region:
-        static: us-east-1
-      sns:
-        enabled: true
-      sqs:
-        enabled: true
-wiremock:
-  standalone:
-    port: 8089
-sicredi:
+
+
+logging:
+  level:
+    software.amazon.awssdk: INFO
+    org.springframework.scheduling: INFO
+
+management:
   endpoints:
-    associate-host: "http://localhost:${wiremock.standalone.port}"
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  health:
+    livenessState:
+      enabled: true
+    readinessState:
+      enabled: true
+

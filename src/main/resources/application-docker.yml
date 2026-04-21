@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://postgres:5432/agenda
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+  cloud:
+    aws:
+      region:
+        static: us-east-1
+      credentials:
+        access-key: test
+        secret-key: test
+      endpoint:
+        uri: http://localstack:4566
+      sns:
+        enabled: true
+        endpoint: http://localstack:4566
+        region: us-east-1
+      sqs:
+        enabled: true
+        endpoint: http://localstack:4566
+        region: us-east-1
+

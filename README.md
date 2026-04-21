@@ -15,7 +15,6 @@ Sistema back-end para gerenciar sessões de votação em assembleias cooperativa
 
 - PostgreSQL (porta 5432)
 - LocalStack AWS (porta 4566)
-- WireMock para validação de CPF (porta 8089)
 
 ## 📡 API
 
@@ -46,8 +45,6 @@ GET /api/v1/agendas/{agenda-id}
 
 ## ✅ Tarefas Bônus Implementadas
 
-**Integração com CPF** - WireMock simula a API externa de validação de associados
-
 **Mensageria** - AWS SNS/SQS via LocalStack para publicação de resultados
 
 **Performance** - *A ser implementado*
@@ -59,7 +56,6 @@ GET /api/v1/agendas/{agenda-id}
 - Java 21 + Spring Boot 3.5.6
 - PostgreSQL
 - AWS SNS + SQS (LocalStack)
-- WireMock (validação CPF)
 
 ## 🧪 Testes
 

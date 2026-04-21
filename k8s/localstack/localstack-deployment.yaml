@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: localstack
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: localstack
+  template:
+    metadata:
+      labels:
+        app: localstack
+    spec:
+      containers:
+        - name: localstack
+          image: localstack/localstack
+          ports:
+            - containerPort: 4566
+          env:
+            - name: SERVICES
+              value: "sns,sqs,s3"
+            - name: DEBUG
+              value: "1"
+            - name: AWS_DEFAULT_REGION
+              value: us-east-1
+            - name: EDGE_PORT
+              value: "4566"
+            - name: PERSISTENCE
+              value: "0"
+            - name: SKIP_S3_VALIDATION
+              value: "1"

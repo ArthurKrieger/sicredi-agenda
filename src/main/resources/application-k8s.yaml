@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://postgres:5432/agenda
+    username: agenda
+    password: ${POSTGRES_PASSWORD}
+  cloud:
+    aws:
+      credentials:
+        access-key: test
+        secret-key: test
+      region:
+        static: us-east-1
+      sns:
+        endpoint: http://localstack:4566
+        enabled: true
+      sqs:
+        endpoint: http://localstack:4566
+        enabled: true

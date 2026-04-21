@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: sns-init
+spec:
+  template:
+    spec:
+      containers:
+        - name: sns-init
+          image: amazon/aws-cli:latest
+          command: [ "sh", "-c" ]
+          args:
+            - |
+              aws --endpoint-url=http://localstack:4566 sns create-topic --name agenda-events
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              value: test
+            - name: AWS_SECRET_ACCESS_KEY
+              value: test
+            - name: AWS_DEFAULT_REGION
+              value: us-east-1
+      restartPolicy: OnFailure

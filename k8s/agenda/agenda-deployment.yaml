@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: agenda
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: agenda
+  template:
+    metadata:
+      labels:
+        app: agenda
+    spec:
+      containers:
+        - name: agenda
+          image: agenda:local
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: k8s
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://postgres:5432/agenda
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_USER
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_PASSWORD
+            # AWS Configurations
+            - name: AWS_ACCESS_KEY_ID
+              value: test
+            - name: AWS_SECRET_ACCESS_KEY
+              value: test
+            - name: AWS_REGION
+              value: us-east-1
+            # Spring Cloud AWS specific
+            - name: SPRING_CLOUD_AWS_SNS_ENDPOINT
+              value: http://localstack:4566
+            - name: SPRING_CLOUD_AWS_SNS_REGION_STATIC
+              value: us-east-1
+            - name: SPRING_CLOUD_AWS_CREDENTIALS_ACCESS_KEY
+              value: test
+            - name: SPRING_CLOUD_AWS_CREDENTIALS_SECRET_KEY
+              value: test
+            - name: SPRING_CLOUD_AWS_REGION_STATIC
+              value: us-east-1
+      initContainers:
+        - name: wait-for-localstack
+          image: busybox
+          command: [ "sh", "-c", "until nc -z localstack 4566; do echo waiting for LocalStack; sleep 2; done;" ]
+        - name: wait-for-sns
+          image: amazon/aws-cli
+          command: [ "sh", "-c" ]
+          args:
+            - |
+              # Primeiro, verifica se o serviço SNS está respondendo
+              until aws --endpoint-url=http://localstack:4566 sns list-topics --region us-east-1 2>/dev/null; do
+                echo "Waiting for SNS service to be ready...";
+                sleep 3;
+              done
+              # Depois, cria o tópico se não existir
+              echo "Checking if topic exists..."
+              if ! aws --endpoint-url=http://localstack:4566 sns list-topics --region us-east-1 | grep -q "agenda-events"; then
+                echo "Creating topic agenda-events..."
+                aws --endpoint-url=http://localstack:4566 sns create-topic --name agenda-events --region us-east-1
+              else
+                echo "Topic agenda-events already exists"
+              fi
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              value: test
+            - name: AWS_SECRET_ACCESS_KEY
+              value: test
+            - name: AWS_DEFAULT_REGION
+              value: us-east-1
