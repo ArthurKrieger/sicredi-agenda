@@ -6,6 +6,7 @@ import com.sicredi.agenda.domain.vote.Vote;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.Clock;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -44,8 +45,8 @@ public class Sessions {
                 .build();
     }
 
-    public Sessions addVote(SessionId sessionId, Vote vote) {
-        return update(sessionId, session -> session.addVote(vote));
+    public Sessions addVote(SessionId sessionId, Vote vote, Clock clock) {
+        return update(sessionId, session -> session.addVote(vote, clock));
     }
 
     public Sessions add(Session newSession) {

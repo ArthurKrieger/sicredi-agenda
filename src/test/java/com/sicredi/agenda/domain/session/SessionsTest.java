@@ -5,6 +5,8 @@ import com.sicredi.agenda.domain.exception.SessionNotFoundException;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.time.Clock;
+import java.time.ZoneOffset;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -56,8 +58,9 @@ class SessionsTest {
             final Sessions sessions = Sessions.builder()
                     .sessions(List.of(originalSession))
                     .build();
+            final Clock clock = Clock.fixed(TestFixtures.TEN, ZoneOffset.UTC);
 
-            final Sessions result = sessions.addVote(TestFixtures.SESSION_ID, TestFixtures.VOTE);
+            final Sessions result = sessions.addVote(TestFixtures.SESSION_ID, TestFixtures.VOTE, clock);
 
             assertThat(result.getSessions()).hasSize(1);
             assertThat(result.getSessions().get(0).getSessionVotes()).containsExactly(TestFixtures.VOTE);
@@ -66,9 +69,10 @@ class SessionsTest {
         @Test
         void throwsSessionNotFoundExceptionWhenSessionDoesNotExist() {
             final Sessions sessions = Sessions.ofEmpty();
+            final Clock clock = Clock.fixed(TestFixtures.TEN, ZoneOffset.UTC);
 
             assertThatExceptionOfType(SessionNotFoundException.class)
-                    .isThrownBy(() -> sessions.addVote(TestFixtures.SESSION_ID, TestFixtures.VOTE));
+                    .isThrownBy(() -> sessions.addVote(TestFixtures.SESSION_ID, TestFixtures.VOTE, clock));
         }
     }
 

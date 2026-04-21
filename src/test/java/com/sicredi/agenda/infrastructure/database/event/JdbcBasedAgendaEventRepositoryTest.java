@@ -41,15 +41,21 @@ class JdbcBasedAgendaEventRepositoryTest {
     class PublishSessionEndedEvent {
 
         @Test
-        void publishesEventWithSerializedSession() {
+        void publishesEventWithSerializedSession() throws Exception {
             final Session session = TestFixtures.SESSION;
             final Instant expectedTime = clock.instant();
+            final String expectedPayload = objectMapper.writeValueAsString(new SessionEndedPayload(
+                    session.getId().id(),
+                    expectedTime,
+                    0L,
+                    0L
+            ));
 
             repository.publishSessionEndedEvent(session);
 
             assertThat(eventJdbcRepository.findAll()).singleElement()
                     .satisfies(savedEvent -> {
-                        assertThat(savedEvent.payload()).isEqualTo(objectMapper.writeValueAsString(session));
+                        assertThat(savedEvent.payload()).isEqualTo(expectedPayload);
                         assertThat(savedEvent.occurredOn()).isEqualTo(expectedTime);
                         assertThat(savedEvent.published()).isFalse();
                     });

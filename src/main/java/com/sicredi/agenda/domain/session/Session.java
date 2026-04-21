@@ -1,5 +1,7 @@
 package com.sicredi.agenda.domain.session;
 
+import com.sicredi.agenda.domain.exception.DuplicateVoteException;
+import com.sicredi.agenda.domain.exception.SessionNotOpenException;
 import com.sicredi.agenda.domain.vote.Vote;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,7 +32,11 @@ public class Session {
     }
 
 
-    public Session addVote(Vote vote) {
+    public Session addVote(Vote vote, Clock clock) {
+        if (!isOpen(clock)) throw new SessionNotOpenException();
+        boolean alreadyVoted = sessionVotes.stream()
+                .anyMatch(v -> v.associate().equals(vote.associate()));
+        if (alreadyVoted) throw new DuplicateVoteException();
         final List<Vote> updatedVotes = new ArrayList<>(this.sessionVotes);
         updatedVotes.add(vote);
         return this.toBuilder()

@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 
+import java.time.Clock;
 import java.util.Optional;
 
 @Getter
@@ -34,8 +35,8 @@ public class Agenda {
                 .build();
     }
 
-    public Agenda vote(@NonNull final SessionId sessionId, @NonNull final Vote vote) {
-        final Sessions updatedSessions = this.sessions.addVote(sessionId, vote);
+    public Agenda vote(@NonNull final SessionId sessionId, @NonNull final Vote vote, @NonNull final Clock clock) {
+        final Sessions updatedSessions = this.sessions.addVote(sessionId, vote, clock);
         return this.toBuilder()
                 .sessions(updatedSessions)
                 .build();

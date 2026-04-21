@@ -1,10 +1,14 @@
 package com.sicredi.agenda.domain.agenda;
 
 import com.sicredi.agenda.TestFixtures;
+import com.sicredi.agenda.domain.associate.Associate;
 import com.sicredi.agenda.domain.session.Sessions;
 import com.sicredi.agenda.domain.vote.Vote;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import java.time.Clock;
+import java.time.ZoneOffset;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -49,13 +53,15 @@ class AgendaTest {
 
         @Test
         void addsMultipleVotesToSession() {
+            final Clock clock = Clock.fixed(TestFixtures.TEN, ZoneOffset.UTC);
             final Vote firstVote = TestFixtures.VOTE;
-            final Vote secondVote = TestFixtures.VOTE.toBuilder()
+            final Vote secondVote = Vote.builder()
                     .inFavor(false)
+                    .associate(Associate.builder().cpf("98765432100").build())
                     .build();
 
-            final Agenda result = TestFixtures.AGENDA.vote(TestFixtures.SESSION_ID, firstVote)
-                    .vote(TestFixtures.SESSION_ID, secondVote);
+            final Agenda result = TestFixtures.AGENDA.vote(TestFixtures.SESSION_ID, firstVote, clock)
+                    .vote(TestFixtures.SESSION_ID, secondVote, clock);
 
             assertThat(result.getSessions().find(TestFixtures.SESSION_ID).getSessionVotes()).containsExactly(firstVote, secondVote);
         }

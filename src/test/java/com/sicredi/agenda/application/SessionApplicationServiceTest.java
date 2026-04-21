@@ -80,14 +80,14 @@ class SessionApplicationServiceTest {
             final Agenda updatedAgenda = mock(Agenda.class);
 
             when(agendaRepository.findAgenda(TestFixtures.AGENDA_ID)).thenReturn(Optional.of(agenda));
-            when(agenda.vote(TestFixtures.SESSION_ID, TestFixtures.VOTE)).thenReturn(updatedAgenda);
+            when(agenda.vote(TestFixtures.SESSION_ID, TestFixtures.VOTE, clock)).thenReturn(updatedAgenda);
             when(agendaRepository.saveAgenda(updatedAgenda)).thenReturn(updatedAgenda);
 
             sessionApplicationService.voteOnSession(TestFixtures.AGENDA_ID, TestFixtures.SESSION_ID, TestFixtures.VOTE);
 
             verify(validator).validate(agenda, TestFixtures.SESSION_ID, TestFixtures.VOTE);
             verify(agendaRepository).findAgenda(TestFixtures.AGENDA_ID);
-            verify(agenda).vote(TestFixtures.SESSION_ID, TestFixtures.VOTE);
+            verify(agenda).vote(TestFixtures.SESSION_ID, TestFixtures.VOTE, clock);
             verify(agendaRepository).saveAgenda(updatedAgenda);
         }
 
@@ -104,7 +104,7 @@ class SessionApplicationServiceTest {
 
             verify(validator).validate(agenda, TestFixtures.SESSION_ID, TestFixtures.VOTE);
             verify(agendaRepository).findAgenda(TestFixtures.AGENDA_ID);
-            verify(agenda, never()).vote(any(), any());
+            verify(agenda, never()).vote(any(), any(), any());
             verify(agendaRepository, never()).saveAgenda(any(Agenda.class));
         }
 

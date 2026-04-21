@@ -1,6 +1,7 @@
 package com.sicredi.agenda.domain.session;
 
 import com.sicredi.agenda.TestFixtures;
+import com.sicredi.agenda.domain.associate.Associate;
 import com.sicredi.agenda.domain.vote.Vote;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -25,13 +26,15 @@ class SessionTest {
 
         @Test
         void addsMultipleVotesToSession() {
+            final Clock clock = Clock.fixed(TEN_AND_TWO, ZoneOffset.UTC);
             final Vote firstVote = TestFixtures.VOTE;
-            final Vote secondVote = TestFixtures.VOTE.toBuilder()
+            final Vote secondVote = Vote.builder()
                     .inFavor(false)
+                    .associate(Associate.builder().cpf("98765432100").build())
                     .build();
 
-            final Session result = TestFixtures.SESSION.addVote(firstVote)
-                    .addVote(secondVote);
+            final Session result = TestFixtures.SESSION.addVote(firstVote, clock)
+                    .addVote(secondVote, clock);
 
             assertThat(result.getSessionVotes()).hasSize(2);
             assertThat(result.getSessionVotes()).containsExactly(firstVote, secondVote);

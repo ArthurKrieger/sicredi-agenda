@@ -21,9 +21,16 @@ public class JdbcBasedAgendaEventRepository implements AgendaEventRepository {
     @Override
     @SneakyThrows
     public void publishSessionEndedEvent(Session session) {
+        final Instant occurredAt = Instant.now(clock);
+        final SessionEndedPayload payload = new SessionEndedPayload(
+                session.getId().id(),
+                occurredAt,
+                session.getSessionVotes().stream().filter(v -> v.inFavor()).count(),
+                session.getSessionVotes().stream().filter(v -> !v.inFavor()).count()
+        );
         final EventEntity event = EventEntity.builder()
-                .payload(objectMapper.writeValueAsString(session))
-                .occurredOn(Instant.now(clock))
+                .payload(objectMapper.writeValueAsString(payload))
+                .occurredOn(occurredAt)
                 .build();
         eventJdbcRepository.save(event);
     }

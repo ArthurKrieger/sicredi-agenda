@@ -61,7 +61,7 @@ class AgendaApplicationIntegrationTest {
         assertThat(firstVote.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         ((TestClock) testClock).fastForward(Duration.ofSeconds(30));
-        final ResponseEntity<Void> secondVote = vote(agendaId, session.id(), "12345678900", VoteValue.NAO);
+        final ResponseEntity<Void> secondVote = vote(agendaId, session.id(), "98765432100", VoteValue.NAO);
         assertThat(secondVote.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         ((TestClock) testClock).fastForward(Duration.ofSeconds(45));

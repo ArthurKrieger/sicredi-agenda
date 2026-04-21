@@ -47,7 +47,7 @@ public class SessionApplicationService {
     public void voteOnSession(@NonNull final AgendaId agendaId, @NonNull final SessionId sessionId, @NonNull final Vote vote) {
         final Agenda agenda = agendaRepository.findAgenda(agendaId).orElseThrow(() -> new AgendaNotFoundException(agendaId));
         sessionVoteValidators.forEach(validator -> validator.validate(agenda, sessionId, vote));
-        final Agenda updatedAgenda = agenda.vote(sessionId, vote);
+        final Agenda updatedAgenda = agenda.vote(sessionId, vote, clock);
         agendaRepository.saveAgenda(updatedAgenda);
     }
 }
